@@ -10,8 +10,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(135deg, #89f7fe, #66a6ff);
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            font-family: 'Arial', sans-serif;
             margin: 0;
             position: relative;
         }
@@ -31,12 +31,13 @@
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
             width: 320px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            animation: fadeIn 1s ease-out;
         }
         h1 {
             color: #333;
@@ -57,14 +58,15 @@
             width: calc(100% - 20px);
             padding: 12px;
             margin: 5px 0;
-            border: 2px solid #66a6ff;
+            border: 2px solid #00b09b;
             border-radius: 8px;
             outline: none;
-            transition: 0.3s;
+            transition: all 0.3s ease-in-out;
             font-size: 16px;
         }
         input:focus {
-            border-color: #0056b3;
+            border-color: #96c93d;
+            transform: scale(1.05);
         }
         button {
             background: linear-gradient(135deg, #ff758c, #ff7eb3);
@@ -75,16 +77,53 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             margin-top: 10px;
+            transform: scale(1);
         }
         button:hover {
             background: linear-gradient(135deg, #ff5f6d, #ff7eb3);
+            transform: scale(1.1);
         }
         p {
             margin-top: 10px;
             font-size: 14px;
             color: red;
+        }
+
+        /* 註冊和動畫 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 成功登入通知 */
+        .success-message {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-weight: bold;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
         /* 手機版調整 */
@@ -123,6 +162,7 @@
             <button onclick="login()">登入</button>
         </div>
         <p id="message"></p>
+        <div class="success-message" id="successMessage">登入成功！正在跳轉...</div>
     </div>
     <div class="info-text">想要密碼嗎? 來聯絡我<br>LINE: @431dkumx</div>
     <script>
@@ -130,8 +170,10 @@
             const user = document.getElementById("username").value;
             const pass = document.getElementById("password").value;
             if (user === "admin" && pass === "1234") {
-                alert("登入成功！");
-                window.location.href = "main.html";
+                document.getElementById("successMessage").style.display = "block";
+                setTimeout(function() {
+                    window.location.href = "main.html";
+                }, 2000); // 2秒後跳轉
             } else {
                 document.getElementById("message").innerText = "帳號或密碼錯誤";
             }
