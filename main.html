@@ -14,15 +14,34 @@
         }
         h2 { color: #333; margin-bottom: 10px; }
         #random-box {
-            width: 120px; height: 120px;
+            width: 200px; height: 100px;
             margin: 10px auto;
             border-radius: 15px;
             box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
             display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 22px;
+            font-weight: bold; font-size: 20px;
             background-color: white;
             transition: background-color 0.5s;
             color: black;
+            flex-direction: column;
+            position: relative;
+        }
+        #loading-animation {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f39c12;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
         #grid {
             display: grid;
@@ -85,11 +104,6 @@
             }
 			#buttons { margin-top: 0px; }
         }
-		@keyframes dots {
-            0% { content: '.'; }
-            33% { content: '..'; }
-            66% { content: '...'; }
-        }
         .loading::after {
             content: '.';
             animation: dots 1s infinite;
@@ -99,7 +113,11 @@
 <body>
 
     <h2>百家樂AI預測系統</h2>
-    <div id="random-box">?</div>
+    <div id="random-box">
+        <div id="loading-animation"></div>
+        <div id="prediction-text">?</div>
+        <div id="prediction-result"></div>
+    </div>
 
    <div id="stats">莊: 0 | 閒: 0 | 和: 0</div>
     <div id="grid"></div>
@@ -168,45 +186,46 @@
         }
 
         function predict() {
-            let box = document.getElementById('random-box');
-            box.innerText = "正在預測";
-            box.classList.add('loading');
-            box.style.backgroundColor = "#f1c40f";
+            let box = document.getElementById('prediction-text');
+            let result = document.getElementById('prediction-result');
+            let loader = document.getElementById('loading-animation');
+            box.innerText = "正在預測中...";
+            result.innerText = "";
+            loader.style.display = "block";
             disableButtons(true);
 
             let randomTime = Math.floor(Math.random() * 2000) + 3000; // 3~5秒隨機
             setTimeout(() => {
-                let color = Math.random() < 0.5 ? 'red' : 'blue';
-                box.style.backgroundColor = color;
-                box.innerText = color === "red" ? "莊" : "閒";
-                box.style.color = "white";
-                box.classList.remove('loading');
+                let redProbability = Math.floor(Math.random() * 100);
+                let blueProbability = 100 - redProbability;
+                box.innerText = "預測結果";
+                result.innerText = `莊: ${redProbability}% | 閒: ${blueProbability}%`;
+                loader.style.display = "none";
                 disableButtons(false);
             }, randomTime);
         }
 
         function init() {
-        	let grid = document.getElementById('grid');
-        	grid.innerHTML = '';  
-        	cells = [];
-        	currentIndex = 0;
+            let grid = document.getElementById('grid');
+            grid.innerHTML = '';  
+            cells = [];
+            currentIndex = 0;
 
-        for (let i = 0; i < 60; i++) {
-            let cell = document.createElement('div');
-            cell.className = 'cell';
-            let circle = document.createElement('div');
-            circle.className = 'circle';
-            cell.appendChild(circle);
-            grid.appendChild(cell);
-            cells.push(circle);
+            for (let i = 0; i < 60; i++) {
+                let cell = document.createElement('div');
+                cell.className = 'cell';
+                let circle = document.createElement('div');
+                circle.className = 'circle';
+                cell.appendChild(circle);
+                grid.appendChild(cell);
+                cells.push(circle);
+            }
+
+            let box = document.getElementById('prediction-text');
+            box.innerText = "?";
+            let result = document.getElementById('prediction-result');
+            result.innerText = "";
         }
-
-        // 設置預測框為初始狀態
-			let box = document.getElementById('random-box');
-			box.innerText = "?";
-			box.style.backgroundColor = "white";
-			box.style.color = "black";
-    }
 
         document.addEventListener("DOMContentLoaded", init);
     </script>
